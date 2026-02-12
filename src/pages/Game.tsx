@@ -78,7 +78,7 @@ export default function Game() {
 
   const turnText =
     loading
-      ? "Loading game..."
+      ? "Restoring your current game..."
       : status === "x_wins"
       ? "You win."
       : status === "o_wins"
@@ -86,7 +86,7 @@ export default function Game() {
       : status === "draw"
       ? "Draw."
       : status === "abandoned"
-      ? "Game abandoned."
+      ? "Previous game was abandoned."
       : isBotThinking || currentTurn === "O"
       ? "Bot is thinking..."
       : "Your turn (X)";
@@ -122,6 +122,7 @@ export default function Game() {
           </div>
 
           <p className="mt-6 text-xs tracking-[0.25em] text-stone-500">{turnText}</p>
+          <p className="mt-2 text-[11px] tracking-wider text-stone-400">Coordinates use x,y in the 0-2 range.</p>
 
           {message && (
             <div className={`mt-4 text-sm tracking-widest ${botType === "chaos" ? "text-red-400" : "text-stone-500"}`}>
@@ -130,7 +131,9 @@ export default function Game() {
           )}
 
           {error && (
-            <div className="mt-4 border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-600">{error}</div>
+            <div className="mt-4 border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-600">
+              Connection issue: {error}
+            </div>
           )}
 
           <div className="mt-10">
