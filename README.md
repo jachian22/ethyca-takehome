@@ -4,6 +4,12 @@ A human-vs-bot tic-tac-toe game with a FastAPI backend and React frontend.
 
 **Stack**: FastAPI + SQLModel (backend), React + TypeScript + Vite + Tailwind (frontend), Postgres (production)
 
+## Public Deployment
+
+- Live app: `https://ethyca-takehome.vercel.app/`
+- Frontend host: Vercel
+- Backend host: Railway (`/health` and game APIs)
+
 ---
 
 ## Design Rationale
@@ -130,6 +136,19 @@ Calls `http://localhost:8000` by default.
    - `VITE_API_BASE_URL` = `https://<railway-backend-url>`
 3. Deploy
 
+### Notes from this deployment
+
+- `VITE_API_BASE_URL` must include protocol and no path suffix:
+  - Correct: `https://your-backend.up.railway.app`
+  - Incorrect: `your-backend.up.railway.app` or `.../health`
+- `CORS_ORIGINS` on Railway must exactly match the Vercel origin:
+  - Example: `https://ethyca-takehome.vercel.app`
+- Railway Root Directory should be `python-api` (no leading slash)
+- Railway Start Command should be:
+  - `python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- Build command can be left blank with Railpack/Nixpacks auto-detection
+- Backend exposes both `/` and `/health` as `200` JSON to satisfy platform health checks
+
 ---
 
 ## Project Structure
@@ -172,3 +191,27 @@ pnpm run build
 - **Single-user context**: No auth or per-user partitioning
 - **Postgres target**: SQLite is dev convenience only
 - **Stateless API**: Bot delay is a frontend concern for better feel
+
+---
+
+## Submission Summary (Copy/Paste)
+
+### Architecture
+
+- Frontend: React + Vite app with API-driven game state (`useGame`), dual input modes (click and coordinates), optimistic UX delay for bot responses, and game history display.
+- Backend: FastAPI + SQLModel REST API with persistent game/move tables, board reconstruction from move history, and deterministic lifecycle rules.
+- Data: Postgres in production (Railway), local SQLite fallback for development.
+
+### Key behavior decisions
+
+- Human is always `X`, bot is always `O`.
+- First game starts with bot; starting player alternates across completed/abandoned games.
+- Exactly one `in_progress` game at a time; creating a new game auto-abandons previous in-progress game.
+- Bot personalities: 90% smart (`win > block > random`), 10% chaos (random) with reveal messaging.
+- API validation errors include helpful machine code + message + `valid_moves`.
+
+### Trade-offs
+
+- Single global game context (no auth/multi-tenant partitioning) to keep scope focused on gameplay correctness.
+- No undo/forfeit API; new game creation serves as explicit abandon flow.
+- Board state is reconstructed from move history instead of storing snapshots; this avoids redundant data and is trivial at tic-tac-toe scale.
