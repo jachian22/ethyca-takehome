@@ -215,3 +215,14 @@ pnpm run build
 - Single global game context (no auth/multi-tenant partitioning) to keep scope focused on gameplay correctness.
 - No undo/forfeit API; new game creation serves as explicit abandon flow.
 - Board state is reconstructed from move history instead of storing snapshots; this avoids redundant data and is trivial at tic-tac-toe scale.
+
+---
+
+## Time Spent
+
+- 2.5 hours from plan to working local end state
+- 1 hour to deploy to Railway for the first time (Python + Postgres)
+
+## Feedback on the Challenge
+
+The take-home was fun, and I hope you enjoy the small idiosyncrasies I added to the app.
