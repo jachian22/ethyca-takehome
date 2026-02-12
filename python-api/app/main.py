@@ -48,6 +48,11 @@ async def handle_validation_error(_, exc: RequestValidationError) -> JSONRespons
     return JSONResponse(status_code=422, content=payload.model_dump())
 
 
+@app.get("/")
+def root() -> dict[str, str]:
+    return {"status": "ok"}
+
+
 @app.get("/health")
 def healthcheck() -> dict[str, str]:
     return {"status": "ok"}
